@@ -2,7 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\EventController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,8 +16,22 @@ use App\Http\Controllers\UserController;
 |
 */
 
-Route::middleware('guest:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::group([
+    'prefix' => 'auth'
+], function () {
+    Route::post('/login', [ AuthController::class, 'login']);
+
+    Route::group([
+      'middleware' => 'auth:api'
+    ], function() {
+        Route::get('/logout', [ AuthController::class, 'logout' ]);
+        Route::get('/user', [ AuthController::class, 'user' ]);
+    });
 });
 
-Route::middleware('guest:api')->get('/get', [UserController::class,'get']);
+Route::group([
+    'prefix' => 'events',
+    'middleware' => 'auth:api'
+], function () {
+    Route::get('/getEvents/{idBusiness}', [ EventController::class, 'getEvents' ]);
+});

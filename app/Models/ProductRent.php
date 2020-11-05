@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProductRent extends Model
 {
-    protected $table = 'ProductRent';
+    protected $table = 'Inventary';
     protected $primaryKey = 'id';
     public $timestamps = false;
 }

@@ -11,6 +11,7 @@ use App\Models\Client;
 use App\Models\EventPrice;
 use App\Models\Pay;
 use Illuminate\Support\Facades\DB;
+use Exception;
 
 class EventController extends Controller
 {
@@ -38,8 +39,8 @@ class EventController extends Controller
         }
 
         $address = Address::where('id', $event['fkAddressId']);
-        $discount = Discount::where('id', $event['fkDiscountId']);
-        $client = Client::where('id', $event['fkClientId']);
+        $discount = Discount::where('id', $event['fkDiscount']);
+        $client = Client::where('id', $event['fkClient']);
         $eventPrice = EventPrice::where('id', $event['fkPayId']);
         $pays = Pay::where('fkPayId', $eventPrice['id']);
         $inventary = ProductRent::where('fkEvent', $idEvent);
@@ -61,23 +62,96 @@ class EventController extends Controller
         return response()->$result;
     }
 
-    public function addEvent($request){
+    public function addEvent(Request $request){
         return DB::transaction(function() use ($request) {
-            // $user = User::create([
-            //     'username' => $request->post('username')
-            // ]);
+
+            try{
+                if($request['idAddress'] != null){
+                    $addAdress = array('id'=>$request['idAddress']);
+                }else{
+                    $newAddress = $request['address'];
     
-            // // Add some sort of "log" record for the sake of transaction:
-            // $log = Log::create([
-            //     'message' => 'User Foobar created'
-            // ]);
+                    $addAdress = Address::insert([
+                        'state' => $newAddress['state'],
+                        'country' => $newAddress['country'],
+                        'street' => $newAddress['street'],
+                        'number' => $newAddress['number'],
+                        'secondaryStreet' => $newAddress['secondayStreet'],
+                        'intNumber' => $newAddress['intNumber'],
+                        'references' => $newAddress['references']
+                    ]);
+                }
     
-            // // Lets add some custom validation that will prohibit the transaction:
-            // if($user->id > 1) {
-            //     throw AnyException('Please rollback this transaction');
-            // }
+                if($request['idClient'] != null){
+                    $addClient = array('id'=>$request['idClient']);
+                }else{
     
-            // return response()->json(['message' => 'User saved!']);
+                    $newClient = $request['client'];
+    
+                    $addClient = Client::insert([
+                        'name' => $newClient['name'],
+                        'lastName' => $newClient['lastName'],
+                        'phoneNumber' => $newClient['phoneNumber'],
+                        'fkAddressId' =>  $addAdress['id']
+                    ]);
+    
+                }
+    
+                $addDiscount = null;
+                $haveDiscount = $request['discount']->count();
+                if($haveDiscount != 0){
+                    $newDiscount = $request['discount'];
+    
+                    $addDiscount = Discount::insert([
+                        'type' => $newDiscount['type'],
+                        'sku' => $newDiscount['sku'],
+                        'percentege' => $newDiscount['percentege'],
+                        'direct' => $newDiscount['direct']
+                    ]);
+                    
+                }
+    
+                $newEventPrice = $request['eventPrice'];
+    
+                $addEventPrice = EventPrice::insert([
+                    'total' => $newEventPrice['total'],
+                    'iva' => $newEventPrice['iva'],
+                    'type' => $newEventPrice['type'],
+                    'description' => $newEventPrice['description'],
+                    'payNumbers' => $newEventPrice['payNumbers'],
+                    'initialPay' => $newEventPrice['initialPay'],
+                    'totalCost' => $newEventPrice['totalCost'],
+                ]);
+    
+                $newEvent = $request['event'];
+    
+                $addEvent = Event::insert([
+                    'fkBusinessId' => $newEvent['fkBusinessId'],
+                    'name' => $newEvent['name'],
+                    'description' => $newEvent['description'],
+                    'fkAddresId' => $addAdress['id'],
+                    'date' => $newEvent['date'],
+                    'deliveryDate' => $newEvent['deliveryDate'],
+                    'rcolectdDay' => $newEvent['rcolectdDay'],
+                    'hourDelivery' => $newEvent['hourDelivery'],
+                    'hourRecolected' => $newEvent['hourRecolected'],
+                    'hourDate' => $newEvent['hourDate'],
+                    'fkDiscount' => $addDiscount['fkDiscount'],
+                    'fkClient' => $addClient['id'],
+                    'status' => $newEvent['status'],
+                    'comment' => $newEvent['comment'],
+                    'fkEventPrice' => $addEventPrice['id'],
+                    'auxPhoneNumber' => $newEvent['auxPhoneNumber'],
+                    'references' => $newEvent['references'],
+                ]);
+
+                DB::commit();
+
+                return response('',201,[]) -> $addEvent;
+            } catch (\Exception $error) {
+                DB::rollBack();
+                return response('',400,[]);
+            }
         });
     }
 }

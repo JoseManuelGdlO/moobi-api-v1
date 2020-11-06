@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Controllers\AddressController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\ClientController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,4 +38,18 @@ Route::group([
     Route::get('/getEvents/{idBusiness}', [ EventController::class, 'getEvents' ]);
     Route::get('/getDetailEvent/{idEvent}', [ EventController::class, 'getDetailEvent' ]);
     Route::post('/postEvent', [ EventController::class, 'getDetailEvent' ]);
+});
+
+Route::group([
+    'prefix' => 'address',
+    'middleware' => 'auth:api'
+], function () {
+    Route::post('/addAddress', [ AddressController::class, 'addAddress' ]);
+});
+
+Route::group([
+    'prefix' => 'client',
+    'middleware' => 'auth:api'
+], function () {
+    Route::post('/newClient', [ ClientController::class, 'newClient' ]);
 });

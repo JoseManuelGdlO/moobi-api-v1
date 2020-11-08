@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -52,4 +53,13 @@ Route::group([
     'middleware' => 'auth:api'
 ], function () {
     Route::post('/newClient', [ ClientController::class, 'newClient' ]);
+});
+
+Route::group([
+    'prefix' => 'user',
+    'middleware' => 'auth:api'
+], function () {
+    Route::post('/addUser', [ UserController::class, 'addUser' ]);
+    Route::put('/updatePass', [ UserController::class, 'updatePass' ]);
+    Route::put('/deleteUser/{id}', [ UserController::class, 'deleteUser' ]);
 });

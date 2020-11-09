@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\ProspectionController;
 use App\Http\Controllers\UserController;
 
 /*
@@ -53,6 +54,8 @@ Route::group([
     'middleware' => 'auth:api'
 ], function () {
     Route::post('/newClient', [ ClientController::class, 'newClient' ]);
+    Route::get('/getClients/{idBusiness}', [ ClientController::class, 'getClients' ]);
+    Route::get('/detailClient/{idClient}', [ ClientController::class, 'detailClient' ]);
 });
 
 Route::group([
@@ -63,3 +66,10 @@ Route::group([
     Route::put('/updatePass', [ UserController::class, 'updatePass' ]);
     Route::put('/deleteUser/{id}', [ UserController::class, 'deleteUser' ]);
 });
+
+Route::group([
+    'prefix' => 'prospection'
+], function () {
+    Route::post('/addProspection', [ ProspectionController::class, 'addProspection' ]);
+});
+

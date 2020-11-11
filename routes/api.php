@@ -1,10 +1,14 @@
 <?php
 
+use App\Http\Controllers\AddressController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\CrudController;
+use App\Http\Controllers\ClientController;
+use App\Http\Controllers\ProspectionController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,6 +40,39 @@ Route::group([
     'middleware' => 'auth:api'
 ], function () {
     Route::get('/getEvents/{idBusiness}', [ EventController::class, 'getEvents' ]);
+    Route::get('/getDetailEvent/{idEvent}', [ EventController::class, 'getDetailEvent' ]);
+    Route::post('/postEvent', [ EventController::class, 'getDetailEvent' ]);
+});
+
+Route::group([
+    'prefix' => 'address',
+    'middleware' => 'auth:api'
+], function () {
+    Route::post('/addAddress', [ AddressController::class, 'addAddress' ]);
+});
+
+Route::group([
+    'prefix' => 'client',
+    'middleware' => 'auth:api'
+], function () {
+    Route::post('/newClient', [ ClientController::class, 'newClient' ]);
+    Route::get('/getClients/{idBusiness}', [ ClientController::class, 'getClients' ]);
+    Route::get('/detailClient/{idClient}', [ ClientController::class, 'detailClient' ]);
+});
+
+Route::group([
+    'prefix' => 'user',
+    'middleware' => 'auth:api'
+], function () {
+    Route::post('/addUser', [ UserController::class, 'addUser' ]);
+    Route::put('/updatePass', [ UserController::class, 'updatePass' ]);
+    Route::put('/deleteUser/{id}', [ UserController::class, 'deleteUser' ]);
+});
+
+Route::group([
+    'prefix' => 'prospection'
+], function () {
+    Route::post('/addProspection', [ ProspectionController::class, 'addProspection' ]);
 });
 
 Route::group([

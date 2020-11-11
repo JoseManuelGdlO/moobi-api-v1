@@ -7,5 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class EventPrice extends Model
 {
-    use HasFactory;
+    protected $table = 'EventsPrice';
+    protected $primaryKey = 'id';
+    public $timestamps = false;use HasFactory;
 }

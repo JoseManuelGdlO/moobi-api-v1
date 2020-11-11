@@ -7,5 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProductRent extends Model
 {
-    use HasFactory;
+    protected $table = 'Inventary';
+    protected $primaryKey = 'id';
+    public $timestamps = false;
 }

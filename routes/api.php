@@ -9,6 +9,7 @@ use App\Http\Controllers\CrudController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ProspectionController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\InventaryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -84,4 +85,13 @@ Route::group([
     Route::get('/getArticle/{id}', [ CrudController::class, 'getArticle']);
     Route::put('/updateArticle/{id}', [ CrudController::class, 'updateArticle']);
     Route::delete('/deleteArticle/{id}', [ CrudController::class, 'deleteArticle']);
+});
+
+Route::group([
+    'prefix' => 'inventary',
+    'middleware' => 'auth:api'
+], function(){
+    Route::post('/addInventary', [ InventaryController::class, 'addInventary']);
+    Route::get('/getInventary/{id}', [ InventaryController::class, 'getInventary']);
+    Route::put('/deleteInventary/{id}', [ InventaryController::class, 'deleteInventary']);
 });

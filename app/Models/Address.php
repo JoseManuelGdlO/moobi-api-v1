@@ -9,5 +9,7 @@ class Address extends Model
 {
     protected $table = 'Address';
     protected $primaryKey = 'id';
+
+    protected $fillable = ['state', 'country', 'street', 'number','secondaryStreet', 'intNumber', 'references', 'fkClientId'];
     public $timestamps = false;
 }

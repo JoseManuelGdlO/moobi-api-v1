@@ -39,7 +39,7 @@ Route::group([
 ], function () {
     Route::get('/getEvents/{idBusiness}', [ EventController::class, 'getEvents' ]);
     Route::get('/getDetailEvent/{idEvent}', [ EventController::class, 'getDetailEvent' ]);
-    Route::post('/postEvent', [ EventController::class, 'getDetailEvent' ]);
+    Route::post('/addEvent', [ EventController::class, 'addEvent' ]);
 });
 
 Route::group([

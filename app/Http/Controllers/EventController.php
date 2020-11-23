@@ -66,43 +66,45 @@ class EventController extends Controller
         return DB::transaction(function() use ($request) {
 
             try{
-                if($request['idAddress'] != null){
-                    $addAdress = array('id'=>$request['idAddress']);
+                $businesId = $request['event']['fkBusinessId'];
+                if($request['idClient'] != null){
+                    $addClient = $request['idClient'];
                 }else{
-                    $newAddress = $request['address'];
     
-                    $addAdress = Address::insert([
+                    $newClient = new Client($request['client']);
+    
+                    $addClient = Client::insertGetId([
+                        'name' => $newClient['name'],
+                        'lastName' => $newClient['lastName'],
+                        'phoneNumber' => $newClient['phoneNumber'],
+                        'email' =>  $newClient['email'],
+                        'fkBusinessId' => $businesId
+                    ]);
+    
+                }
+
+                if($request['idAddress'] != null){
+                    $addAdress = $request['idAddress'];
+                }else{
+                    $newAddress = new Address($request['address']);
+    
+                    $addAdress = Address::insertGetId([
                         'state' => $newAddress['state'],
                         'country' => $newAddress['country'],
                         'street' => $newAddress['street'],
                         'number' => $newAddress['number'],
-                        'secondaryStreet' => $newAddress['secondayStreet'],
+                        'secondaryStreet' => $newAddress['secondaryStreet'],
                         'intNumber' => $newAddress['intNumber'],
-                        'references' => $newAddress['references']
+                        'references' => $newAddress['references'],
+                        'fkClientId' => $addClient
                     ]);
-                }
-    
-                if($request['idClient'] != null){
-                    $addClient = array('id'=>$request['idClient']);
-                }else{
-    
-                    $newClient = $request['client'];
-    
-                    $addClient = Client::insert([
-                        'name' => $newClient['name'],
-                        'lastName' => $newClient['lastName'],
-                        'phoneNumber' => $newClient['phoneNumber'],
-                        'fkAddressId' =>  $addAdress['id']
-                    ]);
-    
                 }
     
                 $addDiscount = null;
-                $haveDiscount = $request['discount']->count();
-                if($haveDiscount != 0){
-                    $newDiscount = $request['discount'];
+                if( $request['discount'] != null ){
+                    $newDiscount = new Discount($request['discount']);
     
-                    $addDiscount = Discount::insert([
+                    $addDiscount = Discount::insertGetId([
                         'type' => $newDiscount['type'],
                         'sku' => $newDiscount['sku'],
                         'percentege' => $newDiscount['percentege'],
@@ -111,9 +113,9 @@ class EventController extends Controller
                     
                 }
     
-                $newEventPrice = $request['eventPrice'];
+                $newEventPrice = new EventPrice($request['eventPrice']);
     
-                $addEventPrice = EventPrice::insert([
+                $addEventPrice = EventPrice::insertGetId([
                     'total' => $newEventPrice['total'],
                     'iva' => $newEventPrice['iva'],
                     'type' => $newEventPrice['type'],
@@ -123,34 +125,53 @@ class EventController extends Controller
                     'totalCost' => $newEventPrice['totalCost'],
                 ]);
     
-                $newEvent = $request['event'];
+                $newEvent = new Event($request['event']);
     
-                $addEvent = Event::insert([
+                $addEvent = Event::insertGetId([
                     'fkBusinessId' => $newEvent['fkBusinessId'],
                     'name' => $newEvent['name'],
                     'description' => $newEvent['description'],
-                    'fkAddresId' => $addAdress['id'],
+                    'fkAddressId' => $addAdress,
                     'date' => $newEvent['date'],
                     'deliveryDate' => $newEvent['deliveryDate'],
-                    'rcolectdDay' => $newEvent['rcolectdDay'],
+                    'recolectedDate' => $newEvent['recolectedDate'],
                     'hourDelivery' => $newEvent['hourDelivery'],
                     'hourRecolected' => $newEvent['hourRecolected'],
                     'hourDate' => $newEvent['hourDate'],
-                    'fkDiscount' => $addDiscount['fkDiscount'],
-                    'fkClient' => $addClient['id'],
+                    'fkDiscount' => $addDiscount,
+                    'fkClient' => $addClient,
                     'status' => $newEvent['status'],
                     'comment' => $newEvent['comment'],
-                    'fkEventPrice' => $addEventPrice['id'],
+                    'fkEventPrice' => $addEventPrice,
                     'auxPhoneNumber' => $newEvent['auxPhoneNumber'],
                     'references' => $newEvent['references'],
                 ]);
 
+                $productsRent = $request['products'];
+
+                $errorsProducts = array();
+                
+                foreach( $productsRent as $product) {
+                    $response = ProductRent::insert([
+                        'fkInventary' => $product['fkInventary'],
+                        'fkEvent' => $addEvent,
+                        'price' => $product['price'],
+                        'quantityRent' => $product['quantityRent'],
+                        'startDate' => $product['startDate'],
+                        'endDate' => $product['endDate'],
+                    ]);
+
+                    if($response == 0) {
+                        $errorsProducts.array_push($product);
+                    }
+                };
+
                 DB::commit();
 
-                return response('',201,[]) -> $addEvent;
+                return response(array(['idEvent' => $addEvent, 'errors' => $errorsProducts]),201,[]);
             } catch (\Exception $error) {
                 DB::rollBack();
-                return response('',400,[]);
+                return response($error,409,[]);
             }
         });
     }

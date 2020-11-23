@@ -7,7 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class EventPrice extends Model
 {
-    protected $table = 'EventsPrice';
+    protected $table = 'EventPrice';
     protected $primaryKey = 'id';
-    public $timestamps = false;use HasFactory;
+    public $timestamps = false;
+
+    protected $fillable = [ 'total', 'iva', 'type', 'description', 'payNumbers', 'initialPay','totalCost'];
+    use HasFactory;
 }

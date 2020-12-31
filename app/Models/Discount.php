@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Discount extends Model
 {
-    protected $table = 'Discount';
+    protected $table = 'discount';
     protected $primaryKey = 'id';
 
     protected $fillable = ['type', 'sku', 'percentege', 'direct'];

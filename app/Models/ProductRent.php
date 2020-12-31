@@ -7,15 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProductRent extends Model
 {
-    protected $table = 'ProductRent';
+    protected $table = 'product_rent';
     protected $primaryKey = 'id';
 
     protected $fillable = [
-        'fkInventary',
-        'fkEvent',
+        'fk_inventary_id',
+        'fk_event_id',
         'price',
-        'quantityRent',
-        'startDate',
+        'quantity_rent',
+        'start_date',
         'endDate'
     ];
     public $timestamps = false;

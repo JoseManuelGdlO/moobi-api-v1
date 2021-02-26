@@ -15,15 +15,15 @@ class ProspectionController extends Controller
 
         $response = Prospection::insertGetId([
             'name' => $request['name'],
-            'phoneNumber' => $request['phoneNumber'],
+            'phone_number' => $request['phone_number'],
             'email' => $request['email'],
             'address' => $request['address'],
             'state' => $request['state'],
-            'nameBusiness' => $request['nameBusiness'],
-            'descriptionBusiness' => $request['descriptionBusiness'],
-            'mediaType' => $request['mediaType'],
-            'creationDate' => $mytime,
-            'availableTime' => $request['availableTime'],
+            'name_business' => $request['name_business'],
+            'description_business' => $request['description_business'],
+            'media_type' => $request['media_type'],
+            'creation_date' => $mytime,
+            'available_time' => $request['available_time'],
         ]);
 
         if ($response != 0) {

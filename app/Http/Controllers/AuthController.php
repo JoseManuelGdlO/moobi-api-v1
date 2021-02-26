@@ -8,7 +8,7 @@ use Carbon\Carbon;
 
 class AuthController extends Controller
 {
-    
+
     /**
      * Inicio de sesión y creación de token
      */

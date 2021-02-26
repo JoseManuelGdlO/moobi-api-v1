@@ -17,7 +17,7 @@ class EventController extends Controller
 {
     public function getEvents($idBusiness)
     {
-        $events = Event::where('fk_business_id', $idBusiness);
+        $events = Event::where('fk_business_id', $idBusiness)->get();
 
         $total = $events->count();
         if ($total != 0) {
@@ -38,12 +38,12 @@ class EventController extends Controller
             return response('', 404, []);
         }
 
-        $address = Address::where('id', $event['fkAddressId']);
-        $discount = Discount::where('id', $event['fkDiscount']);
-        $client = Client::where('id', $event['fkClient']);
-        $eventPrice = EventPrice::where('id', $event['fkPayId']);
+        $address = Address::where('id', $event['fk_address_id']);
+        $discount = Discount::where('id', $event['fk_discount_id']);
+        $client = Client::where('id', $event['fk_client_id']);
+        $eventPrice = EventPrice::where('id', $event['fk_pay_id']);
         $pays = Pay::where('fkPayId', $eventPrice['id']);
-        $inventary = ProductRent::where('fkEvent', $idEvent);
+        $inventary = ProductRent::where('fk_event_id', $idEvent);
 
         $result = array(
             'event' => array(
@@ -66,9 +66,9 @@ class EventController extends Controller
         return DB::transaction(function() use ($request) {
 
             try{
-                $businesId = $request['event']['fk_businessId'];
-                if($request['idClient'] != null){
-                    $addClient = $request['idClient'];
+                $businesId = $request['event']['fk_business_id'];
+                if($request['id_client'] != null){
+                    $addClient = $request['id_client'];
                 }else{
     
                     $newClient = new Client($request['client']);
@@ -93,10 +93,10 @@ class EventController extends Controller
                         'country' => $newAddress['country'],
                         'street' => $newAddress['street'],
                         'number' => $newAddress['number'],
-                        'secondaryStreet' => $newAddress['secondaryStreet'],
-                        'intNumber' => $newAddress['intNumber'],
+                        'secondary_street' => $newAddress['secondary_street'],
+                        'int_number' => $newAddress['int_number'],
                         'references' => $newAddress['references'],
-                        'fkClientId' => $addClient
+                        'fk_client_id' => $addClient
                     ]);
                 }
     
@@ -108,42 +108,42 @@ class EventController extends Controller
                         'type' => $newDiscount['type'],
                         'sku' => $newDiscount['sku'],
                         'percentege' => $newDiscount['percentege'],
-                        'direct' => $newDiscount['direct']
+                        'direct_disc' => $newDiscount['direct_disc']
                     ]);
                     
                 }
     
-                $newEventPrice = new EventPrice($request['eventPrice']);
+                $newEventPrice = new EventPrice($request['event_price']);
     
                 $addEventPrice = EventPrice::insertGetId([
                     'total' => $newEventPrice['total'],
                     'iva' => $newEventPrice['iva'],
                     'type' => $newEventPrice['type'],
                     'description' => $newEventPrice['description'],
-                    'payNumbers' => $newEventPrice['payNumbers'],
-                    'initialPay' => $newEventPrice['initialPay'],
-                    'totalCost' => $newEventPrice['totalCost'],
+                    'pay_numbers' => $newEventPrice['pay_numbers'],
+                    'initial_pay' => $newEventPrice['initial_pay'],
+                    'total_post' => $newEventPrice['total_cost'],
                 ]);
     
                 $newEvent = new Event($request['event']);
     
                 $addEvent = Event::insertGetId([
-                    'fkBusinessId' => $newEvent['fkBusinessId'],
+                    'fk_business_id' => $newEvent['fk_business_id'],
                     'name' => $newEvent['name'],
                     'description' => $newEvent['description'],
-                    'fkAddressId' => $addAdress,
+                    'fk_address_id' => $addAdress,
                     'date' => $newEvent['date'],
-                    'deliveryDate' => $newEvent['deliveryDate'],
-                    'recolectedDate' => $newEvent['recolectedDate'],
-                    'hourDelivery' => $newEvent['hourDelivery'],
-                    'hourRecolected' => $newEvent['hourRecolected'],
-                    'hourDate' => $newEvent['hourDate'],
-                    'fkDiscount' => $addDiscount,
-                    'fkClient' => $addClient,
+                    'delivery_date' => $newEvent['delivery_date'],
+                    'recolected_date' => $newEvent['recolected_date'],
+                    'hour_delivery' => $newEvent['hour_delivery'],
+                    'hour_decolected' => $newEvent['hour_recolected'],
+                    'hour_date' => $newEvent['hour_date'],
+                    'fk_discount_id' => $addDiscount,
+                    'fk_client_id' => $addClient,
                     'status' => $newEvent['status'],
                     'comment' => $newEvent['comment'],
-                    'fkEventPrice' => $addEventPrice,
-                    'auxPhoneNumber' => $newEvent['auxPhoneNumber'],
+                    'fk_event_price' => $addEventPrice,
+                    'aux_phone_number' => $newEvent['aux_phone_number'],
                     'references' => $newEvent['references'],
                 ]);
 
@@ -153,12 +153,12 @@ class EventController extends Controller
                 
                 foreach( $productsRent as $product) {
                     $response = ProductRent::insert([
-                        'fkInventary' => $product['fkInventary'],
-                        'fkEvent' => $addEvent,
+                        'fk_inventary' => $product['fk_inventary'],
+                        'fk_event' => $addEvent,
                         'price' => $product['price'],
-                        'quantityRent' => $product['quantityRent'],
-                        'startDate' => $product['startDate'],
-                        'endDate' => $product['endDate'],
+                        'quantity_rent' => $product['quantity_rent'],
+                        'start_Date' => $product['start_date'],
+                        'end_date' => $product['end_date'],
                     ]);
 
                     if($response == 0) {
@@ -168,7 +168,7 @@ class EventController extends Controller
 
                 DB::commit();
 
-                return response(array(['idEvent' => $addEvent, 'errors' => $errorsProducts]),201,[]);
+                return response(array(['id_event' => $addEvent, 'errors' => $errorsProducts]),201,[]);
             } catch (\Exception $error) {
                 DB::rollBack();
                 return response($error,409,[]);

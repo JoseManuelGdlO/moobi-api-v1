@@ -22,7 +22,7 @@ class AuthController extends Controller
         $email = $request->email;
         $password = $request->password;
 
-        $user = User::where('email', $email)->where('password', $password)->where('isDelete', '!=', true)->first();
+        $user = User::where('email', $email)->where('password', $password)->where('is_delete', '!=', true)->first();
 
         if ($user == null)
             return response()->json([

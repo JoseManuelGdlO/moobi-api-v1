@@ -17,7 +17,7 @@ class EventController extends Controller
 {
     public function getEvents($idBusiness)
     {
-        $events = Event::where('fkBusinessId', $idBusiness);
+        $events = Event::where('fk_business_id', $idBusiness);
 
         $total = $events->count();
         if ($total != 0) {
@@ -66,7 +66,7 @@ class EventController extends Controller
         return DB::transaction(function() use ($request) {
 
             try{
-                $businesId = $request['event']['fkBusinessId'];
+                $businesId = $request['event']['fk_businessId'];
                 if($request['idClient'] != null){
                     $addClient = $request['idClient'];
                 }else{
@@ -75,10 +75,10 @@ class EventController extends Controller
     
                     $addClient = Client::insertGetId([
                         'name' => $newClient['name'],
-                        'lastName' => $newClient['lastName'],
-                        'phoneNumber' => $newClient['phoneNumber'],
+                        'last_name' => $newClient['last_name'],
+                        'phone_number' => $newClient['phone_number'],
                         'email' =>  $newClient['email'],
-                        'fkBusinessId' => $businesId
+                        'fk_business_id' => $businesId
                     ]);
     
                 }

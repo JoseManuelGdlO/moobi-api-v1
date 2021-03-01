@@ -13,7 +13,7 @@ class UserController extends Controller
         $users = User::get()->toArray();
 
         foreach ($users as $user) {
-            if($user['email'] == $request['email'] && $user['fkBusiness'] == $request['fkBusinessId']) {
+            if($user['email'] == $request['email'] && $user['fk_business_id'] == $request['fk_business_id']) {
                 return response('Email exist',409,[]);
             }
         }
@@ -22,15 +22,15 @@ class UserController extends Controller
         $mytime->toDateTimeString();
 
         $response = User::insertGetId([
-            'firstName' => $request['firstName'],
-            'lastName' => $request['lastName'],
+            'first_name' => $request['first_name'],
+            'last_name' => $request['last_name'],
             'email' => $request['email'],
-            'fkRol' => $request['fkRolId'],
-            'fkBusiness' => $request['fkBusinessId'],
+            'fk_rol_id' => $request['fk_rol_id'],
+            'fk_Business_id' => $request['fk_business_id'],
             'password' => $request['password'],
-            'isAdmin' => false,
-            'isDelete' => false,
-            'creationDate' => $mytime
+            'is_admin' => false,
+            'is_delete' => false,
+            'creation_date' => $mytime
         ]);
 
         if($response != 0) {
@@ -57,7 +57,7 @@ class UserController extends Controller
 
         try {
             $user = User::find($id);
-            if($user['isAdmin'] == 1) {
+            if($user['is_admin'] == 1) {
                 return response('User is Admin',409,[]);
             }
 

@@ -13,9 +13,9 @@ class AddressController extends Controller
             'country' => $request['country'],
             'street' => $request['street'],
             'number' => $request['number'],
-            'sencondaryStreet' => $request['secondaryStreet'],
+            'sencondary_street' => $request['secondary_street'],
             'references' => $request['references'],
-            'fkClientId' => $request['fkClientId']
+            'fk_client_id' => $request['fk_client_id']
         ]);
 
         if($response != 0) {

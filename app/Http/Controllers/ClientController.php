@@ -13,10 +13,10 @@ class ClientController extends Controller
     {
         $response = Client::insertGetId([
             'name' => $request['name'],
-            'lastName' => $request['lastName'],
-            'phoneNumber' => $request['phoneNumber'],
+            'last_name' => $request['last_name'],
+            'phone_number' => $request['phone_number'],
             'email' => $request['email'],
-            'fkBusinessId' => $request['fkBusinessId'],
+            'fk_business_id' => $request['fk_business_id'],
         ]);
 
         if ($response != 0) {
@@ -28,7 +28,7 @@ class ClientController extends Controller
 
     public function getClients($idBusiness)
     {
-        $response = Client::get()->where('fkBusinessId', $idBusiness)->toArray();
+        $response = Client::get()->where('fk_business_id', $idBusiness)->toArray();
 
         if ($response != 0) {
             return response(json_encode($response), 200, []);
@@ -45,9 +45,9 @@ class ClientController extends Controller
         try {
             $detailClient = Client::get()->where('id', $idClient)->first();
 
-            $address = Address::get()->where('fkClientId', $idClient)->toArray();
+            $address = Address::get()->where('fk_client_id', $idClient)->toArray();
 
-            $events = Event::get()->where('fkClientId', $idClient)->toArray();
+            $events = Event::get()->where('fk_client_id', $idClient)->toArray();
 
             $response = array(
                 "client" => $detailClient,

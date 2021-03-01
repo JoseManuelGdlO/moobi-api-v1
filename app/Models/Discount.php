@@ -10,6 +10,6 @@ class Discount extends Model
     protected $table = 'discount';
     protected $primaryKey = 'id';
 
-    protected $fillable = ['type', 'sku', 'percentege', 'direct'];
+    protected $fillable = ['type', 'sku', 'percentege', 'direct_disc'];
     public $timestamps = false;
 }

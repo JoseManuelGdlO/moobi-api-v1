@@ -31,19 +31,19 @@ class EventController extends Controller
 
     public function getDetailEvent($idEvent)
     {
-        $event = Event::where('id', $idEvent);
+        $event = Event::where('id', $idEvent)->first();
 
         $total = $event->count();
         if ($total == 0) {
             return response('', 404, []);
         }
-
-        $address = Address::where('id', $event['fk_address_id']);
-        $discount = Discount::where('id', $event['fk_discount_id']);
-        $client = Client::where('id', $event['fk_client_id']);
-        $eventPrice = EventPrice::where('id', $event['fk_pay_id']);
-        $pays = Pay::where('fkPayId', $eventPrice['id']);
-        $inventary = ProductRent::where('fk_event_id', $idEvent);
+       
+        $address = Address::where('id', $event['fk_address_id'])->first();
+        $discount = Discount::where('id', $event['fk_discount_id'])->first();
+        $client = Client::where('id', $event['fk_client_id'])->first();
+        $eventPrice = EventPrice::where('id', $event['fk_price_id'])->first();
+        $pays = Pay::where('fk_price_event_id', $eventPrice['id'])->get();
+        $inventary = ProductRent::where('fk_event_id', $idEvent)->get();
 
         $result = array(
             'event' => array(
@@ -54,12 +54,14 @@ class EventController extends Controller
                 ),
                 'client' => $client,
                 'address' => $address,
-                'disccount' => $discount,
+                'discount' => $discount,
                 'rent' => $inventary
             )
         );
 
-        return response()->$result;
+        return response()->json([
+            $result
+        ]);
     }
 
     public function addEvent(Request $request){

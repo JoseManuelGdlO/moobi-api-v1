@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AddressController;
+use App\Http\Controllers\AplicationController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EventController;
@@ -70,6 +71,12 @@ Route::group([
     'prefix' => 'prospection'
 ], function () {
     Route::post('/addProspection', [ ProspectionController::class, 'addProspection' ]);
+});
+
+Route::group([
+    'prefix' => 'application'
+], function () {
+    Route::get('/onboarding', [ AplicationController::class, 'getOnboarding' ]);
 });
 
 

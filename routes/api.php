@@ -37,8 +37,11 @@ Route::group([
     'prefix' => 'events',
     'middleware' => 'auth:api'
 ], function () {
+    Route::get('/getProductsRent', [ EventController::class, 'getProductsRent']);
+    Route::get('/getAllEvents', [ EventController::class, 'getAllEvents']);
     Route::get('/getEvents/{idBusiness}', [ EventController::class, 'getEvents' ]);
     Route::get('/getDetailEvent/{idEvent}', [ EventController::class, 'getDetailEvent' ]);
+    Route::get('/getEventsDates', [ EventController::class, 'getEventsDates' ]);
     Route::post('/addEvent', [ EventController::class, 'addEvent' ]);
 });
 

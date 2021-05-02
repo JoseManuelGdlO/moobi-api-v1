@@ -15,6 +15,52 @@ use Exception;
 
 class EventController extends Controller
 {
+
+    public function getProductsRent($idEvent)
+    {
+        $productsRent = DB::table('inventary')
+            ->join('product_rent','fk_inventary_id', '=', 'inventary.id')
+            ->select('inventary.name as NombreProducto', 'inventary.quantity as UnidadesDisponibles', 'product_rent.*')
+            ->get('');
+
+        $total = $productsRent->count();
+        if ($total != 0) {
+            return response()->json(
+                $productsRent
+            );
+        } else {
+            return response('', 404, []);
+        }
+    }
+
+    public function getEventsDates()
+    {
+        $events = Event::get('event_date');
+
+        $total = $events->count();
+        if ($total != 0) {
+            return response()->json(
+                $events
+            );
+        } else {
+            return response('', 404, []);
+        }
+    }
+
+    public function getAllEvents()
+    {
+        $events = Event::get();
+
+        $total = $events->count();
+        if ($total != 0) {
+            return response()->json([
+                $events
+            ]);
+        } else {
+            return response('', 404, []);
+        }
+    }
+
     public function getEvents($idBusiness)
     {
         $events = Event::where('fk_business_id', $idBusiness)->get();

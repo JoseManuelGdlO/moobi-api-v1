@@ -11,12 +11,12 @@ class ProductRent extends Model
     protected $primaryKey = 'id';
 
     protected $fillable = [
-        'fk_inventary_id',
-        'fk_event_id',
+        'start_date',
+        'end_date',
         'price',
         'quantity_rent',
-        'start_date',
-        'endDate'
+        'fk_inventary_id',
+        'fk_event_id'
     ];
     public $timestamps = false;
 }
